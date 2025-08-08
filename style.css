@@ -1,0 +1,116 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+  font-family: "Helvetica Neue", Helvetica, Arial;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  background-color: #272726;
+  color: rgb(255, 94, 0);
+  text-shadow: 0px 0px 1rem rgba(255, 68, 0, 0.5);
+  border-collapse: separate;
+  display: flex;
+  overflow: hidden;
+}
+.grainy {
+  background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(11, 0, 0, 0.9)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 182px;
+  box-shadow: 0px 0px 1rem black inset
+}
+
+.prevent-select {
+  /* Safari */
+  -webkit-user-select: none;
+  /* IE 10 and IE 11 */
+  -ms-user-select: none;
+  /* Standard syntax */
+  user-select: none;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1
+  }
+
+  50% {
+    opacity: 0.95
+  }
+
+  100% {
+    opacity: 1
+  }
+}
+
+@keyframes scanlines {
+  from {
+    mask-position: 0 0px;
+  }
+
+  to {
+    mask-position: 0 60px;
+  }
+}
+
+#console {
+  width: 60rem;
+  height: 32rem;
+  overflow: scroll;
+  margin: 2rem auto;
+  font-size: medium;
+  transform-style: preserve-3d;
+  transform: perspective(20cm) rotateX(15deg);
+  box-shadow: 0px 0px 4px rgba(255, 68, 0, 0.5) inset, 0px 0px 1rem black inset;
+  outline: 1px solid rgba(255, 166, 0, 0.425);
+  display: flex;
+  flex-direction: column;
+  filter: blur(10px 0.5px);
+  animation: flicker 0.1s infinite, scanlines 1s linear infinite;
+  background: rgba(53, 0, 0, 0.1) url("emblem.svg");
+  background-size: 80% 80%;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  mask: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .9) 0, black 3px, rgba(0, 0, 0, .9) 6px);
+}
+
+#console-text-main {
+  padding: 1rem;
+  flex-grow: 1;
+}
+
+@keyframes console-hazard {
+  from {
+    background-position: 0px 0px
+  }
+
+  to {
+    background-position: 87px -87px
+  }
+}
+
+#console-hazard {
+  mask: linear-gradient(to right,
+      rgba(0, 0, 0, 0) .1rem,
+      rgba(0, 0, 0, 1) 1rem,
+      rgba(0, 0, 0, 1) 51%,
+      rgba(0, 0, 0, 0) 51%), linear-gradient(to left,
+      rgba(0, 0, 0, 0) .1rem,
+      rgba(0, 0, 0, 1) 1rem,
+      rgba(0, 0, 0, 1) 51%,
+      rgba(0, 0, 0, 0) 51%);
+  flex-basis: 2rem;
+  background: repeating-linear-gradient(45deg,
+      rgba(255, 10, 0, 0.2), rgba(255, 10, 0, 0.2) 10px,
+      rgba(0, 0, 0, 0) 10px, rgba(0, 0, 0, 0) 20px);
+  background-size: 29px 29px;
+  animation: console-hazard 10s linear infinite;
+  text-align: center;
+  align-content: center;
+  color: orangered;
+  text-shadow: 0px 0px 1rem black, 0px 0px 1rem black, 0px 0px 1rem black, 0px 0px 1rem black;
+}

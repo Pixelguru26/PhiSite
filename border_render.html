@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="UTF-8" />
+  <title>Godfall</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <style>
+      #console {
+        box-sizing: border-box;
+        color: rgb(255, 94, 0);
+        height: 1000px;
+        overflow: scroll;
+        margin: 4px 4px 4px 4px;
+        font-size: larger;
+        transform-style: preserve-3d;
+        /* transform: perspective(20cm) rotateX(15deg); */
+        box-shadow: 0px 0px 4px rgba(255, 68, 0, 0.5) inset, 0px 0px 1rem black inset;
+        outline: 1px solid rgba(255, 166, 0, 0.425);
+        display: flex;
+        flex-direction: column;
+        filter: blur(10px 0.5px);
+        animation: flicker 0.1s infinite, scanlines 1s linear infinite;
+        background: rgba(53, 0, 0, 0.1) url("emblem.svg");
+        background-size: 80% 80%;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        mask: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .7) 0, black 3px, rgba(0, 0, 0, .9) 6px);
+        overflow: hidden;
+      }
+      #console-hazard {
+        mask: linear-gradient(
+          to right,
+          rgba(0,0,0,0) .1rem,
+          rgba(0,0,0,1) 1rem,
+          rgba(0,0,0,1) 51%,
+          rgba(0, 0, 0, 0) 51%
+        ), linear-gradient(
+          to left,
+          rgba(0, 0, 0, 0) .1rem,
+          rgba(0, 0, 0, 1) 1rem,
+          rgba(0, 0, 0, 1) 51%,
+          rgba(0,0,0,0) 51%
+        );
+        flex-basis: 2rem;
+        background: repeating-linear-gradient(
+          45deg,
+          rgba(255, 10, 0, 0.2),rgba(255, 10, 0, 0.2) 10px,
+          rgba(0,0,0,0) 10px, rgba(0,0,0,0) 20px
+        );
+        background-size: 29px 29px;
+        text-align: center;
+        align-content: center;
+        color: orangered;
+        text-shadow: 0px 0px 1rem black, 0px 0px 1rem black, 0px 0px 1rem black, 0px 0px 1rem black;
+      }
+      .warning-symbol {
+        color: orange;
+        text-shadow: 0 0 4px rgba(255, 68, 0, 1);
+      }
+
+      b {
+        color: orange;
+        font-weight: bolder;
+      }
+      #console-ruler {
+        width: 1rem;
+        height: 100%;
+
+        --ruler-unit: .4%;
+
+        /* Low ticks */
+        --ruler1-bdw: 2px;
+        --ruler1-c: rgba(255, 68, 0, 0.5);
+        --ruler1-h: 8px;
+        --ruler1-space: 2;
+
+        /* Tall ticks */
+        --ruler2-bdw: 1.2px;
+        --ruler2-c: orange;
+        --ruler2-h: 16px;
+        --ruler2-space: 10;
+
+        filter: blur(0.5px);
+
+        background-image:
+          linear-gradient(to bottom, var(--ruler1-c) 0 var(--ruler1-bdw), transparent 0),
+          linear-gradient(to bottom, var(--ruler2-c) 0 var(--ruler2-bdw), transparent 0);
+
+        background-repeat: repeat-y;
+          background-size:
+            var(--ruler1-h) calc(var(--ruler-unit) * var(--ruler1-space)),
+            var(--ruler2-h) calc(var(--ruler-unit) * var(--ruler2-space));
+
+        animation: console-ruler 2s infinite;
+        margin-right: 10px;
+      }
+    </style>
+    <div id="console">
+      <div id="console-hazard">
+        <span class="warning-symbol">⚠</span> W A R N I N G <span class="warning-symbol">⚠</span>
+      </div>
+      <div style="display: flex; font-size: small;">
+        <div style="flex-grow: 1; padding-inline: 1rem;">
+          <table>
+            <tr>
+              <td>Uplink Status: <b>OK</b><span style="width: 2rem; display: inline-block;"></span></td>
+              <td>Encryption key: <span style="font-size: x-small; color: orange;">d3*uzfG28*Of#R8X_558-1</span></td>
+            </tr>
+            <tr>
+              <td><span>残時間 <b style="color: red;">62:00</b> 秒</span></td>
+            </tr>
+          </table>
+        </div>
+        <table style="width:fit-content; padding-inline: 10px;">
+          <tr>
+            <td style="text-align: right;">Core suppression:</td>
+            <td><b style="color: red;">12%</b></td>
+          </tr>
+          <tr>
+            <td style="text-align: right;">Operational Status: </td>
+            <td><b style="color:red;">QLIPPOTH</b></td>
+          </tr>
+        </table>
+      </div>
+      <div id="console-ruler" style="float:left; flex-shrink: 0;"></div>
+      henlo
+    </div>
+  </div>
+  <canvas id=canvas width=792 height=1008 ></canvas>
+  <script>
+    window.onload = function () {
+      let data = document.getElementById("wrapper").innerHTML;
+      let canvas = document.getElementById("canvas");
+      let context = canvas.getContext("2d");
+      
+      function renderHtmlToCanvas(canvas, html) {
+
+        const ctx = canvas.getContext('2d');
+
+        const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
+        <foreignObject width="100%" height="100%">
+            <div xmlns="http://www.w3.org/1999/xhtml">${html}</div>
+        </foreignObject>
+        </svg>`;
+
+        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+        const svgObjectUrl = URL.createObjectURL(svgBlob);
+
+        const tempImg = new Image();
+        tempImg.addEventListener('load', function () {
+          ctx.drawImage(tempImg, 0, 0);
+          URL.revokeObjectURL(svgObjectUrl);
+        });
+
+        tempImg.src = svgObjectUrl;
+      }
+      console.log(data);
+      renderHtmlToCanvas(canvas, data);
+      // context.fillStyle = "green";
+      // context.fillRect(50, 50, 100, 100);
+      // // no argument defaults to image/png; image/jpeg, etc also work on some
+      // // implementations -- image/png is the only one that must be supported per spec.
+      document.getElementById("console").remove();
+      // console.log(canvas.toDataURL("image/png"));
+      canvas.onclick = (evt) => {
+        window.open(canvas.toDataURL("image/png"));
+      }
+    }
+  </script>
+</body>
+</html>
